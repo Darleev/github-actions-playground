@@ -1,0 +1,19 @@
+name: Test tar behavior with read-only files
+
+on: push
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: List read-only files
+        run: Get-ChildItem .git -Recurse -Attributes ReadOnly
+
+      - name: Pack and unpack
+        run: |
+          $tar = "C:\Program Files\Git\usr\bin\tar.exe"
+          & $tar -cz -f ${{ runner.temp }}\repo.tgz .
+          & $tar -xzv -f ${{ runner.temp }}\repo.tgz
